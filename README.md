@@ -111,7 +111,7 @@ hushhook reduces accidents. It does not guarantee anything, and it is worth know
 - **It reads common shell commands, not all of them.** A script that opens a file and prints it, `python -c`, or copying a file before reading it all get past the file rules. The mask still catches any known format in the output.
 - **It is a seatbelt, not a sandbox.** The agent can still run code, reach the network and change files. An agent set on getting around a rule can do so. Use a real sandbox if that is your concern.
 - **Command rules match text.** They catch the usual forms of a dangerous command, not every way to write it.
-- **It only sees tool calls.** Anything you paste into the chat, or that the agent writes itself, goes straight through.
+- **It only sees tool calls.** Anything you paste into the chat, or that the agent writes itself, goes straight through. The same goes for text Claude Code adds by itself, such as the reminder that a file changed on disk.
 - **Masking happens after a command has run.** The secret was still used. If hushhook warns you about a real one, rotate it.
 - **Replacing output needs a recent Claude Code.** On a version without output replacement you still get the warning and the log line, but the original output reaches the model. Bypass mode is the exception for Bash, since the mask runs inside the command.
 - **If hushhook fails, your agent keeps working.** Any error in a hook means no protection for that call, by design, so a bug here never stops your session. Run `hushhook doctor` if something seems off.
