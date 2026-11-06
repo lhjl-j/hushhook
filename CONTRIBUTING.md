@@ -4,6 +4,8 @@ The most useful thing you can add to hushhook is a rule. It takes about five min
 
 ## Add a rule in five minutes
 
+Fastest path, no clone needed: `hushhook rules new secrets acme-token` creates a starter file, you fill in the pattern and examples, `hushhook rules test` checks them, and `hushhook rules share acme-token` prints a link that opens the rule on GitHub ready to submit. Prefer a pull request? The steps below do the same by hand.
+
 ### 1. Get the code
 
 Fork the repository on GitHub, then:

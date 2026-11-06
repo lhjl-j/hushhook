@@ -167,6 +167,8 @@ ignores: ghp_short
 
 如果缺了某種權杖格式、檔案或指令，大約五分鐘就能加上去，而且每個使用 hushhook 的人都會因此受到保護。[CONTRIBUTING.md](CONTRIBUTING.md) 有一步一步的說明。
 
+被誤擋了？`hushhook explain <規則 id>` 會顯示該規則、怎麼關掉，以及回報誤判的連結。要為自己的服務加規則，`hushhook rules new secrets acme-token` 會建好範本並確保設定會載入它，`hushhook rules share acme-token` 會檢查範例並印出連結，讓同樣用這個服務的人也能用上這則規則。
+
 ## 授權
 
 [MIT](LICENSE)

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1 - Unreleased
+
+- `hushhook explain <rule-id>`: shows where a rule lives, how to turn it off, and a ready link to report a wrong match (only the rule id goes in the link).
+- When a read or command is blocked, the message now tells the agent that the user can run `hushhook explain <rule-id>`.
+- `hushhook rules new <kind> <id>`: creates a starter file for a rule of your own and makes sure your config loads it.
+- `hushhook rules share <id>`: checks your examples and, if they pass and hold no real-looking secret, prints a link so others using the service get the rule too.
+
 ## 0.1.0 - Unreleased
 
 First release.

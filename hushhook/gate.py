@@ -10,6 +10,7 @@ import sys
 
 from . import shell
 from .config import load_config
+from .tools import deny_hint
 from .rules import load_rules, path_matches
 
 BIG_RANGE = 200
@@ -107,6 +108,7 @@ def _secret_file_reason(path, rule):
     return (
         "hushhook blocked reading %s (rule %s): this file usually holds secrets. "
         "Ask the user for the specific value you need." % (path, rule.id)
+        + deny_hint(rule.id)
     )
 
 
@@ -222,6 +224,7 @@ def check_shell(command, cwd, ctx):
             return deny(
                 "hushhook blocked this command (rule %s): %s "
                 "If it is really intended, ask the user to run it." % (rule.id, rule.reason)
+                + deny_hint(rule.id)
             )
     base = cwd or os.getcwd()
     for folder in shell.leading_dirs(text):

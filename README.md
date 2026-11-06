@@ -168,6 +168,8 @@ ignores: ghp_short
 
 If a token format, a file or a command is missing, adding it takes about five minutes, and it protects everyone who uses hushhook. [CONTRIBUTING.md](CONTRIBUTING.md) walks you through it.
 
+Blocked by mistake? `hushhook explain <rule-id>` shows the rule, how to turn it off, and a link to report the wrong match. For your own service, `hushhook rules new secrets acme-token` creates a starter file that your config already loads, and `hushhook rules share acme-token` checks your examples and prints a link so others using that service get the rule too.
+
 ## License
 
 [MIT](LICENSE)

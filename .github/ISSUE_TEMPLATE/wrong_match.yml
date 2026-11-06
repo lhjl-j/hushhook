@@ -1,0 +1,31 @@
+name: Wrong match
+description: A rule blocked or masked something it should not have.
+title: "Wrong match: "
+labels: ["wrong-match"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Never paste a real secret here.** Describe it instead: `abc_` followed by 36 letters and digits.
+        Thanks for telling us. It helps keep the rule accurate for everyone using it.
+  - type: input
+    id: rule
+    attributes:
+      label: Rule id
+      description: Shown in the block message, or run `hushhook explain <rule-id>`.
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What was blocked or masked?
+      description: Describe it in words, or write it in the {a*36} form. No real values.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: hushhook version
+      description: Output of `hushhook --version`.
+    validations:
+      required: true

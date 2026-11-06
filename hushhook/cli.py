@@ -9,7 +9,7 @@ import sys
 import tempfile
 import time
 
-from . import __version__, codemap, mask, scan
+from . import __version__, codemap, mask, scan, tools
 from .config import check_config, config_path, load_config, state_dir
 from .rules import KINDS, check_rule, expand, load_rules, path_matches
 
@@ -168,7 +168,21 @@ def _rule_problems(rules):
     ]
 
 
+def cmd_explain(args):
+    return tools.cmd_explain(args.rule_id)
+
+
 def cmd_rules(args):
+    if args.action == "new":
+        if len(args.names) != 2:
+            print("usage: hushhook rules new <secrets|files|commands> <id>", file=sys.stderr)
+            return 1
+        return tools.cmd_new(*args.names)
+    if args.action == "share":
+        if len(args.names) != 1:
+            print("usage: hushhook rules share <id>", file=sys.stderr)
+            return 1
+        return tools.cmd_share(args.names[0])
     config = load_config()
     rules = load_rules(config, include_disabled=True)
     if args.action == "test":
@@ -327,9 +341,16 @@ def build_parser():
     sub = commands.add_parser("doctor", help="check that everything works")
     sub.set_defaults(run=cmd_doctor)
 
-    sub = commands.add_parser("rules", help="list the rules, or `rules test` to run their examples")
-    sub.add_argument("action", nargs="?", choices=["test"])
+    sub = commands.add_parser(
+        "rules", help="list the rules; `rules test`, `rules new <kind> <id>`, `rules share <id>`"
+    )
+    sub.add_argument("action", nargs="?", choices=["test", "new", "share"])
+    sub.add_argument("names", nargs="*", help="new: <kind> <id>; share: <id>")
     sub.set_defaults(run=cmd_rules)
+
+    sub = commands.add_parser("explain", help="show a rule, how to turn it off, and how to report a wrong match")
+    sub.add_argument("rule_id")
+    sub.set_defaults(run=cmd_explain)
 
     sub = commands.add_parser("mask", help="mask secrets from stdin to stdout")
     sub.set_defaults(run=cmd_mask)
