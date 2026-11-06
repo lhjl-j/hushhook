@@ -1,0 +1,43 @@
+# Infrastructure that takes real services down.
+
+id: terraform-destroy
+pattern: \b(?:terraform|tofu|terragrunt)\s+(?:-\S+\s+)*(?:destroy\b|apply\b[^\n;|&]*\s-destroy\b)
+reason: this tears down real infrastructure.
+matches: terraform destroy
+matches: tofu destroy -auto-approve
+matches: terraform -chdir=infra destroy
+matches: terraform apply -destroy
+ignores: terraform plan
+ignores: grep destroy terraform.log
+
+id: terraform-auto-approve
+pattern: \b(?:terraform|tofu|terragrunt)\s+(?:-\S+\s+)*apply\b[^\n;|&]*\s-auto-approve\b
+reason: this changes infrastructure with no one reviewing the plan.
+matches: terraform apply -auto-approve
+ignores: terraform apply plan.out
+
+id: kubectl-delete-namespace
+pattern: \bkubectl\b[^\n;|&]*\bdelete\s+(?:ns|namespaces?)\b
+reason: this deletes a namespace and everything in it.
+matches: kubectl delete namespace production
+matches: kubectl --context prod delete ns web
+ignores: kubectl get namespaces
+
+id: kubectl-delete-all
+pattern: \bkubectl\b[^\n;|&]*\bdelete\b[^\n;|&]*\s--all\b
+reason: this deletes every matching resource.
+matches: kubectl delete pods --all
+ignores: kubectl delete pod web-1
+
+id: aws-s3-bulk-delete
+pattern: \baws\s+s3\s+(?:rb\b[^\n;|&]*\s--force\b|rm\b[^\n;|&]*\s--recursive\b)
+reason: this deletes a bucket's contents and cannot be undone.
+matches: aws s3 rb s3://my-bucket --force
+matches: aws s3 rm s3://my-bucket/data --recursive
+ignores: aws s3 ls s3://my-bucket
+
+id: gcloud-delete-project
+pattern: \bgcloud\s+projects\s+delete\b
+reason: this deletes a whole Google Cloud project.
+matches: gcloud projects delete my-project
+ignores: gcloud projects list

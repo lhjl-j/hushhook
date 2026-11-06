@@ -1,0 +1,9 @@
+# Containers and their data.
+
+id: docker-prune-volumes
+pattern: \bdocker\s+(?:system\s+prune\b[^\n;|&]*\s--volumes\b|volume\s+prune\b)
+reason: this deletes Docker volumes, which often hold the only copy of the data.
+matches: docker system prune -a --volumes
+matches: docker volume prune
+ignores: docker system prune
+ignores: docker volume ls

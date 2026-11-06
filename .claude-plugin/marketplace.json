@@ -1,0 +1,14 @@
+{
+  "name": "hushhook",
+  "description": "hushhook keeps secrets and big dumps out of your AI coding agent's conversation.",
+  "owner": {
+    "name": "hushhook contributors"
+  },
+  "plugins": [
+    {
+      "name": "hushhook",
+      "source": "./",
+      "description": "Masks secrets, stops big dumps and blocks dangerous commands, all on your own machine."
+    }
+  ]
+}

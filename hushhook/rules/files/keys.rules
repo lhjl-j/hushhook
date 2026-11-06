@@ -1,0 +1,39 @@
+# Private keys and key stores.
+
+id: ssh-private-key-file
+glob: id_rsa
+glob: id_dsa
+glob: id_ecdsa
+glob: id_ed25519
+glob: id_ecdsa_sk
+glob: id_ed25519_sk
+glob: *.ppk
+matches: ~/.ssh/id_rsa
+matches: keys/id_ed25519
+ignores: ~/.ssh/id_ed25519.pub
+ignores: ~/.ssh/known_hosts
+
+id: pem-file
+glob: *.pem
+glob: *.key
+matches: certs/server.pem
+matches: tls/server.key
+ignores: server.crt
+ignores: keyboard.py
+
+id: pkcs12-file
+glob: *.p12
+glob: *.pfx
+matches: release.p12
+ignores: p12.md
+
+id: java-keystore
+glob: *.jks
+glob: *.keystore
+matches: android/release.keystore
+ignores: keystore.md
+
+id: gnupg-folder
+glob: .gnupg/*
+matches: ~/.gnupg/secring.gpg
+ignores: gnupg.md

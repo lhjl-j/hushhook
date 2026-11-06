@@ -1,0 +1,65 @@
+# Cloud and infrastructure credentials.
+
+id: aws-credentials
+glob: .aws/credentials
+matches: ~/.aws/credentials
+ignores: docs/aws/credentials.md
+
+id: gcloud-credentials
+glob: application_default_credentials.json
+glob: .config/gcloud/credentials.db
+glob: .config/gcloud/access_tokens.db
+matches: ~/.config/gcloud/application_default_credentials.json
+ignores: gcloud.md
+
+id: service-account-json
+glob: service-account*.json
+glob: service_account*.json
+glob: *-service-account.json
+matches: deploy/service-account.json
+matches: prod-service-account.json
+ignores: service-accounts.md
+
+id: google-oauth-credentials
+glob: credentials.json
+glob: client_secret*.json
+matches: credentials.json
+matches: client_secret_123.apps.googleusercontent.com.json
+ignores: credentials.py
+
+id: azure-tokens
+glob: .azure/accessTokens.json
+glob: .azure/msal_token_cache.*
+matches: ~/.azure/accessTokens.json
+ignores: azure.md
+
+id: kubeconfig
+glob: .kube/config
+glob: kubeconfig
+glob: *.kubeconfig
+matches: ~/.kube/config
+matches: cluster.kubeconfig
+ignores: kubeconfig.md
+
+id: terraform-state
+glob: *.tfstate
+glob: *.tfstate.backup
+matches: infra/terraform.tfstate
+matches: terraform.tfstate.backup
+ignores: main.tf
+
+id: terraform-variables
+glob: *.tfvars
+except: *.example.tfvars
+matches: prod.tfvars
+ignores: prod.example.tfvars
+
+id: terraform-credentials
+glob: .terraform.d/credentials.tfrc.json
+matches: ~/.terraform.d/credentials.tfrc.json
+ignores: credentials.tfrc.md
+
+id: vault-token-file
+glob: .vault-token
+matches: ~/.vault-token
+ignores: vault-token.md

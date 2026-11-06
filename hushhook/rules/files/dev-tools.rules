@@ -1,0 +1,69 @@
+# Package managers, Git and database clients.
+
+id: npmrc
+glob: .npmrc
+matches: ~/.npmrc
+ignores: npmrc.md
+
+id: pypirc
+glob: .pypirc
+matches: ~/.pypirc
+ignores: pypirc.md
+
+id: netrc
+glob: .netrc
+glob: _netrc
+matches: ~/.netrc
+ignores: netrc.py
+
+id: git-credentials
+glob: .git-credentials
+matches: ~/.git-credentials
+ignores: .gitignore
+
+id: docker-config
+glob: .docker/config.json
+matches: ~/.docker/config.json
+ignores: docker/config.json
+
+id: cargo-credentials
+glob: .cargo/credentials
+glob: .cargo/credentials.toml
+matches: ~/.cargo/credentials.toml
+ignores: .cargo/config.toml
+
+id: gem-credentials
+glob: .gem/credentials
+matches: ~/.gem/credentials
+ignores: Gemfile
+
+id: github-cli-hosts
+glob: .config/gh/hosts.yml
+matches: ~/.config/gh/hosts.yml
+ignores: .config/gh/config.yml
+
+id: pgpass
+glob: .pgpass
+matches: ~/.pgpass
+ignores: pgpass.md
+
+id: mysql-client-config
+glob: .my.cnf
+matches: ~/.my.cnf
+ignores: my.cnf.md
+
+id: htpasswd
+glob: .htpasswd
+matches: site/.htpasswd
+ignores: htpasswd.md
+
+id: wordpress-config
+glob: wp-config.php
+matches: site/wp-config.php
+ignores: wp-config-sample.php
+
+id: secrets-yaml
+glob: secrets.yml
+glob: secrets.yaml
+matches: config/secrets.yml
+ignores: secrets.md

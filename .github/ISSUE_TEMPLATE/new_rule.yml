@@ -1,0 +1,45 @@
+name: New rule
+description: Suggest a secret format, a sensitive file or a dangerous command.
+labels: ["rule"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping protect more people. Please never paste a real token, even an old one.
+        Describe the format instead: `abc_` followed by 36 letters and digits.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of rule?
+      options:
+        - secrets (a token or key format to mask)
+        - files (a file that should not be read)
+        - commands (a command that should be stopped)
+    validations:
+      required: true
+  - type: input
+    id: service
+    attributes:
+      label: Service or tool
+      placeholder: Example Cloud
+    validations:
+      required: true
+  - type: textarea
+    id: format
+    attributes:
+      label: What does it look like?
+      description: The prefix, length and characters, or the file name, or the command.
+      placeholder: Starts with abc_, then 36 letters and digits.
+    validations:
+      required: true
+  - type: input
+    id: docs
+    attributes:
+      label: Link to the official docs
+      description: This helps confirm the format.
+  - type: checkboxes
+    id: pr
+    attributes:
+      label: Want to add it yourself?
+      options:
+        - label: "Yes, I'll send a pull request. CONTRIBUTING.md shows how in about five minutes."

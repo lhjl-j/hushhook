@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hushhook"
+description = "Keeps secrets and big dumps out of your AI coding agent's conversation."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "hushhook contributors" }]
+keywords = ["security", "secrets", "privacy", "redaction", "hooks", "ai", "coding-agent"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+]
+dependencies = []
+dynamic = ["version"]
+
+[project.scripts]
+hushhook = "hushhook.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/monarchsofchaos004-gif/hushhook"
+Issues = "https://github.com/monarchsofchaos004-gif/hushhook/issues"
+Changelog = "https://github.com/monarchsofchaos004-gif/hushhook/blob/main/CHANGELOG.md"
+
+[tool.setuptools]
+packages = ["hushhook", "hushhook.adapters"]
+
+[tool.setuptools.package-data]
+hushhook = ["rules/*/*.rules"]
+
+[tool.setuptools.dynamic]
+version = { attr = "hushhook.__version__" }

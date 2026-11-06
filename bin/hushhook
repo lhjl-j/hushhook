@@ -1,0 +1,4 @@
+#!/bin/sh
+# Lets the agent run `hushhook ...` when this repository is installed as a Claude Code plugin.
+root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd -P)
+PYTHONPATH="$root${PYTHONPATH:+:$PYTHONPATH}" exec python3 -m hushhook "$@"

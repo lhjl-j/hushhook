@@ -1,0 +1,18 @@
+{
+  "name": "hushhook",
+  "version": "0.1.0",
+  "description": "Keeps secrets and big dumps out of your AI coding agent's conversation. Runs locally, has no dependencies and sends nothing anywhere.",
+  "author": {
+    "name": "hushhook contributors"
+  },
+  "license": "MIT",
+  "keywords": [
+    "security",
+    "secrets",
+    "privacy",
+    "redaction",
+    "hooks"
+  ],
+  "homepage": "https://github.com/monarchsofchaos004-gif/hushhook",
+  "repository": "https://github.com/monarchsofchaos004-gif/hushhook"
+}

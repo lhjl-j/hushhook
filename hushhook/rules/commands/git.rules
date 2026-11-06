@@ -1,0 +1,16 @@
+# Git history you cannot easily get back.
+
+id: git-force-push
+pattern: \bgit\s+(?:-\S+\s+\S+\s+)*push\b[^\n;|&]*\s(?:--force(?![-\w])|-[a-zA-Z]*f[a-zA-Z]*(?=\s|$))
+reason: a force push can overwrite other people's commits. Use --force-with-lease, or ask the user.
+matches: git push --force origin main
+matches: git push -f
+matches: git -C repo push origin main --force
+ignores: git push --force-with-lease origin main
+ignores: git push -u origin feature-f
+
+id: git-delete-main-branch
+pattern: \bgit\s+push\b[^\n;|&]*\s(?:--delete|-d)\s+(?:\S+\s+)?(?:main|master)\b
+reason: this deletes the main branch on the remote.
+matches: git push origin --delete main
+ignores: git push origin --delete old-feature

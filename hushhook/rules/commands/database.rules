@@ -1,0 +1,26 @@
+# Data that is gone once the command runs.
+
+id: sql-drop-database
+pattern: (?i)\bdrop\s+(?:database|schema)\b
+reason: this deletes a whole database.
+matches: psql -c "DROP DATABASE app"
+matches: mysql -e 'drop schema app'
+ignores: grep "drop table" notes.txt
+
+id: postgres-dropdb
+pattern: \bdropdb\s+\S
+reason: this deletes a whole Postgres database.
+matches: dropdb app
+ignores: which dropdb
+
+id: redis-flush
+pattern: (?i)\bredis-cli\b[^\n;|&]*\bflush(?:all|db)\b
+reason: this empties a Redis database.
+matches: redis-cli -h cache FLUSHALL
+ignores: redis-cli ping
+
+id: mongo-drop-database
+pattern: \bdb\.dropDatabase\s*\(
+reason: this deletes a whole MongoDB database.
+matches: mongosh app --eval "db.dropDatabase()"
+ignores: mongosh app --eval "db.stats()"
