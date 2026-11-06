@@ -54,7 +54,8 @@ class Wrapping(unittest.TestCase):
         rewritten = wrap("cd /tmp && ls", "MASK")
         self.assertTrue(rewritten.startswith("cd /tmp && set -o pipefail"))
         result = self.run_wrapped("cd /tmp && true", suffix="\npwd")
-        self.assertEqual(result.stdout.strip(), os.path.realpath("/tmp"))
+        # macOS: /tmp is a link, so compare the real locations.
+        self.assertEqual(os.path.realpath(result.stdout.strip()), os.path.realpath("/tmp"))
 
     def test_quoted_and_repeated_cd(self):
         os.makedirs(os.path.join(self.home, "a b", "c"))
