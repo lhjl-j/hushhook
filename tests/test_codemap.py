@@ -46,6 +46,25 @@ one_line() { echo "${HOME}"; }
 """
 
 
+GO = '''package main
+
+import "fmt"
+
+// Start boots the server.
+func (s *Server) Start(port int) error {
+    fmt.Println("http://localhost", port) // a private remark
+    return s.ping()
+}
+
+// ping checks the server.
+func (s *Server) ping() error { return nil }
+
+// add returns the sum.
+func add(a, b int) int {
+    return a + b
+}
+'''
+
 class CodeMap(unittest.TestCase):
     def setUp(self):
         self.folder = tempfile.TemporaryDirectory()
@@ -157,7 +176,7 @@ class CodeMap(unittest.TestCase):
         self.write("page.ts", "const a = 1;\n")
         result = self.cli("map", "page.ts")
         self.assertEqual(result.returncode, 1)
-        self.assertIn("not Python or shell yet", result.stderr)
+        self.assertIn("not a supported language yet", result.stderr)
 
     def test_a_file_that_does_not_parse(self):
         self.write("bad.py", "def (:\n")
@@ -175,6 +194,46 @@ class CodeMap(unittest.TestCase):
                 self.assertEqual(result.stdout, "")
                 self.assertIn("dotenv", result.stderr)
 
+
+    def test_go_language_is_recognised(self):
+        self.assertEqual(codemap.language(self.write("main.go", GO)), "go")
+
+    def test_go_outline_lists_functions_and_methods(self):
+        text = "\n".join(codemap.outline(self.write("main.go", GO)))
+        self.assertIn("def L6-9 Server.Start(port)", text)
+        self.assertIn("def L12-12 Server.ping()", text)
+        self.assertIn("def L15-17 add(a, b)", text)
+        self.assertIn("-> ping", text)
+
+    def test_go_peek_hides_comments_and_strings(self):
+        text = "\n".join(codemap.peek(self.write("main.go", GO), "Start"))
+        self.assertIn("return s.ping()", text)
+        self.assertIn('fmt.Println("...", port)', text)
+        self.assertNotIn("http://localhost", text)
+        self.assertNotIn("private remark", text)
+
+    def test_go_peek_keep_strings_keeps_urls_with_slashes(self):
+        text = "\n".join(codemap.peek(self.write("main.go", GO), "Start", keep_strings=True))
+        self.assertIn("http://localhost", text)
+        self.assertNotIn("private remark", text)
+
+    def test_go_docs_use_line_comments(self):
+        path = self.write("main.go", GO)
+        text = "\n".join(codemap.docs(path))
+        self.assertIn("Server.Start: Start boots the server.", text)
+        self.assertIn("add: add returns the sum.", text)
+        self.assertIn("add: add returns the sum.", "\n".join(codemap.docs(path, "add")))
+
+    def test_go_refs_show_the_enclosing_function(self):
+        self.write("main.go", GO)
+        self.assertIn("main.go:15  add", codemap.references(self.home, "add"))
+
+    def test_go_cli_map_peek_refs_doc(self):
+        self.write("main.go", GO)
+        self.assertIn("Server.Start", self.cli("map", "main.go").stdout)
+        self.assertIn("return s.ping()", self.cli("peek", "main.go", "Start").stdout)
+        self.assertIn("main.go:15  add", self.cli("refs", ".", "add").stdout)
+        self.assertIn("Server.Start: Start boots the server.", self.cli("doc", "main.go").stdout)
 
 if __name__ == "__main__":
     unittest.main()
