@@ -17,5 +17,5 @@ First release.
 - Rule packs in plain text: 40+ secret formats, 30 sensitive file kinds and 20 dangerous command patterns.
 - `hushhook install` and `uninstall`: merge into Claude Code settings with a backup, and can run repeatedly.
 - `hushhook doctor`, `rules`, `rules test` and `leaks`.
-- `hushhook map`, `peek`, `refs` and `doc` for Python and shell.
+- `hushhook map`, `peek`, `refs` and `doc` for Python, shell and Go.
 - Claude Code plugin packaging.
