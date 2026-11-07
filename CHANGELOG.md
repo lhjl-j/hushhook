@@ -7,6 +7,7 @@
 - `hushhook rules new <kind> <id>`: creates a starter file for a rule of your own and makes sure your config loads it.
 - `hushhook rules share <id>`: checks your examples and, if they pass and hold no real-looking secret, prints a link so others using the service get the rule too.
 - New secret rules for Notion integration tokens (`ntn_`) and legacy integration tokens (`secret_`); ordinary identifiers such as `secret_key_base` stay unmasked.
+- New file rules for Pulumi (`.pulumi/credentials.json`) and Sentry (`.sentryclirc`) credential files.
 
 ## 0.1.0 - Unreleased
 
