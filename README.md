@@ -67,7 +67,7 @@ The agent reaches for a huge log:
 $ cat build.log
 hushhook stopped a big dump: build.log has more than 300 lines. Narrow it first:
 read a range, search with grep, or run `hushhook map build.log` for an outline
-of a Python or shell file.
+of a supported source file.
 ```
 
 The agent tries something you cannot undo:
@@ -141,7 +141,7 @@ All settings are optional. They live in `~/.config/hushhook/config.json`:
 
 ## Reading code with less
 
-These work for Python and shell. Function bodies stay out of `map`, and `peek` drops comments and shows strings as `"..."` until you ask for them.
+These work for Python, shell and Go. Function bodies stay out of `map`, and `peek` drops comments and shows strings as `"..."` until you ask for them.
 
 ```text
 $ hushhook map hushhook/hook.py
