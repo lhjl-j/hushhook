@@ -273,7 +273,7 @@ def _print_code(path, produce):
         print("hushhook: no such file: %s" % path, file=sys.stderr)
         return 1
     if codemap.language(path) is None:
-        print("hushhook: %s is not Python or shell yet." % path, file=sys.stderr)
+        print("hushhook: %s is not a supported language yet." % path, file=sys.stderr)
         return 1
     try:
         lines = produce()
