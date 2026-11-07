@@ -1,7 +1,7 @@
 """A cheap look at source code: the outline first, then only the lines you need.
 
-Python is read with ast and shell functions with a small scanner. To add another
-language, give LANGUAGES an entry and write its outline and quiet functions.
+Python is read with ast; shell and Go functions with a small scanner. To add
+another language, give LANGUAGES an entry and write its outline and quiet functions.
 """
 
 import ast
@@ -12,7 +12,8 @@ import tokenize
 
 from .shell import blank_quotes
 
-LANGUAGES = {".py": "python", ".sh": "shell", ".bash": "shell", ".zsh": "shell"}
+LANGUAGES = {".py": "python", ".sh": "shell", ".bash": "shell", ".zsh": "shell",
+             ".go": "go"}
 SKIP_DIRS = {
     ".git", ".hg", ".svn", ".tox", ".venv", ".mypy_cache", ".pytest_cache",
     "__pycache__", "node_modules", "venv", "build", "dist",
@@ -25,6 +26,20 @@ _SH_DEF = (
 _STRING_START = re.compile(r"^([A-Za-z]*)('''|\"\"\"|'|\")")
 _SH_STRING = re.compile(r"'[^']*'|\"(?:[^\"\\]|\\.)*\"")
 _SH_PLAIN_VAR = re.compile(r"^\"\$\{?\w+\}?\"$")
+
+
+_GO_DEF = re.compile(
+    r"^\s*func\s+"
+    r"(?:\(\s*[A-Za-z_]\w*\s+\*?(?P<type>[A-Za-z_]\w*)\s*\)\s*)?"
+    r"(?P<name>[A-Za-z_]\w*)\s*\("
+)
+_GO_STRING = re.compile(r'"(?:[^"\\]|\\.)*"|`[^`]*`')
+_GO_RUNE = re.compile(r"'(?:[^'\\]|\\.)*'")
+
+
+def _go_blank(match):
+    text = match.group(0)
+    return text[0] + "_" * max(0, len(text) - 2) + text[-1:]
 
 
 class Item:
@@ -41,7 +56,7 @@ class Item:
 
 
 def language(path):
-    """Return "python", "shell", or None for a file this module cannot read."""
+    """Return "python", "shell", "go", or None for a file this module cannot read."""
     known = LANGUAGES.get(os.path.splitext(path)[1].lower())
     if known:
         return known
@@ -146,9 +161,58 @@ def _shell_items(lines):
     return items
 
 
+def _go_code(line):
+    """Brace counting must ignore braces in comments, strings and rune literals."""
+    code = _GO_STRING.sub(_go_blank, line)
+    code = _GO_RUNE.sub(_go_blank, code)
+    found = re.search(r"//", code)
+    return code[: found.start()] if found else code
+
+
+def _go_args(line, end):
+    tail = line[end:].split(")", 1)[0]
+    names = []
+    for part in tail.split(","):
+        words = part.strip().split()
+        if words and re.fullmatch(r"[A-Za-z_]\w*", words[0]):
+            names.append(words[0])
+    return ", ".join(names)
+
+
+def _go_items(lines):
+    items = []
+    for number, line in enumerate(lines, 1):
+        found = _GO_DEF.match(line)
+        if not found:
+            continue
+        name = found.group("name")
+        if found.group("type"):
+            name = "%s.%s" % (found.group("type"), name)
+        depth, opened, end = 0, False, len(lines)
+        for row in range(number - 1, len(lines)):
+            code = _go_code(lines[row])
+            depth += code.count("{") - code.count("}")
+            opened = opened or "{" in code
+            if opened and depth <= 0:
+                end = row + 1
+                break
+        items.append(Item(name, number, end, _go_args(line, found.end())))
+    short = {item.name.split(".")[-1] for item in items}
+    for item in items:
+        body = "\n".join(lines[item.start : item.end])
+        item.calls = [
+            name for name in sorted(short - {item.name.split(".")[-1]})
+            if re.search(r"(?<!\w)%s(?!\w)" % re.escape(name), body)
+        ]
+    return items
+
+
 def _items(path, source):
-    if language(path) == "python":
+    lang = language(path)
+    if lang == "python":
         return _python_items(ast.parse(source))
+    if lang == "go":
+        return _go_items(source.splitlines())
     return _shell_items(source.splitlines())
 
 
@@ -215,6 +279,25 @@ def _quiet_shell(lines, keep_strings):
     return out
 
 
+def _go_hide(match):
+    text = match.group(0)
+    return text[0] + "..." + text[0]
+
+
+def _quiet_go(lines, keep_strings):
+    out = []
+    for line in lines:
+        masked = _GO_STRING.sub(lambda m: " " * len(m.group(0)), line)
+        masked = _GO_RUNE.sub(lambda m: " " * len(m.group(0)), masked)
+        found = re.search(r"//", masked)
+        code = line[: found.start()] if found else line
+        if keep_strings:
+            out.append(code)
+            continue
+        out.append(_GO_RUNE.sub(_go_hide, _GO_STRING.sub(_go_hide, code)))
+    return out
+
+
 def peek(path, what, keep_strings=False, raw=False):
     """Return numbered lines of one function, class or start:end range.
 
@@ -235,6 +318,8 @@ def peek(path, what, keep_strings=False, raw=False):
         shown = lines
     elif language(path) == "python":
         shown = _quiet_python(source, keep_strings)
+    elif language(path) == "go":
+        shown = _quiet_go(lines, keep_strings)
     else:
         shown = _quiet_shell(lines, keep_strings)
     out = []
@@ -285,6 +370,17 @@ def _shell_comment_above(lines, line):
     return "\n".join(found)
 
 
+def _go_comment_above(lines, line):
+    found = []
+    row = line - 2
+    while row >= 0 and lines[row].lstrip().startswith("//"):
+        part = lines[row].lstrip()[2:].strip()
+        if part and not part.startswith("go:"):
+            found.insert(0, part)
+        row -= 1
+    return "\n".join(found)
+
+
 def docs(path, name=None):
     """Return docstrings (Python) or the comment above each function (shell)."""
     source = _read(path)
@@ -297,6 +393,12 @@ def docs(path, name=None):
             text = ast.get_docstring(node)
             if text and name in (None, label, label.split(".")[-1]):
                 out.append("%s: %s" % (label, text if name else text.splitlines()[0]))
+    elif language(path) == "go":
+        lines = source.splitlines()
+        for item in _go_items(lines):
+            text = _go_comment_above(lines, item.start)
+            if text and name in (None, item.name, item.name.split(".")[-1]):
+                out.append("%s: %s" % (item.name, text))
     else:
         lines = source.splitlines()
         for item in _shell_items(lines):
