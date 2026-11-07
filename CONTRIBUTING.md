@@ -114,7 +114,7 @@ Then open a pull request on GitHub. The automated checks run the same commands o
 
 ## Other ways to help
 
-**A new language for the code tools.** `hushhook/codemap.py` covers Python and shell. To add one, give `LANGUAGES` an entry and write the outline and quiet functions for it. A careful regular expression is fine, and the standard library is all you have to work with.
+**A new language for the code tools.** `hushhook/codemap.py` covers Python, shell and Go. To add one, give `LANGUAGES` an entry and write the outline and quiet functions for it. A careful regular expression is fine, and the standard library is all you have to work with.
 
 **A new agent.** An adapter is one small file that turns an agent's hook format into calls to `gate.py` and `scan.py`:
 
