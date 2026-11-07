@@ -2,6 +2,7 @@
 
 ## 0.1.1 - Unreleased
 
+- New secret rule for Shopify Admin API access tokens (`shpat_`, `shpca_`, `shppa_`, `shpss_`); short or non-hex lookalikes stay unmasked.
 - `hushhook explain <rule-id>`: shows where a rule lives, how to turn it off, and a ready link to report a wrong match (only the rule id goes in the link).
 - When a read or command is blocked, the message now tells the agent that the user can run `hushhook explain <rule-id>`.
 - `hushhook rules new <kind> <id>`: creates a starter file for a rule of your own and makes sure your config loads it.
